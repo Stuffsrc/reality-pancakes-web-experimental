@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Reality Pancakes</title>
+    <title>Reality Pancakes Web</title>
     <link rel="stylesheet" href="https://pyscript.net" />
     <script type="module" src="https://pyscript.net"></script>
 
@@ -9,7 +9,6 @@
         packages = ["pygame-ce"]
         
         [files]
-        # This maps the real file to the virtual location Python sees
         "assets/fonts/schrift.ttf" = "assets/fonts/schrift.ttf"
     </py-config>
 </head>
@@ -17,7 +16,6 @@
     <h1>Reality Pancakes</h1>
     <canvas id="canvas"></canvas>
     
-    <!-- Use relative path: no leading slash -->
     <script type="py-game" src="main.py"></script>
 </body>
 </html>
