@@ -12,8 +12,7 @@
     async def main():
         running = True
         while running:
-            font_path = "asset/fonts/schrift.ttf"
-            font = pygame.font.Font(font_path, 24)
+            font = pygame.font.Font("asset/fonts/schrift.ttf", 24)
                 def playdemosong()
                     # 1. Get the absolute path to the directory where THIS script is saved
                     BASE_PATH = pathlib.Path(__file__).parent.resolve()
