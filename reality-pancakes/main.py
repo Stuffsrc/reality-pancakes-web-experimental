@@ -932,5 +932,7 @@ async def main():
                         typewrite("you were protected by the psychic shield.")
                         time.sleep(1)
                         typewrite("ok seriously stop. there is nothing you can do. please just try something else.")
-                titlescreen()
+                        titlescreen()
+                        await asyncio.sleep(0) 
+                        clock.tick(60)
 asyncio.run(main())
