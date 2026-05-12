@@ -2,14 +2,14 @@
 <html>
 <head>
     <title>Reality Pancakes</title>
-    <!-- Link to PyScript assets -->
-    <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
-    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+    <!-- Chargement de PyScript -->
+    <link rel="stylesheet" href="https://pyscript.net" />
+    <script type="module" src="https://pyscript.net"></script>
 </head>
 <body>
-    <h1>Python Output:</h1>
-    <!-- This tag runs your Python code -->
-    <py-script src="main.py"></py-script>
+    <h1>Reality Pancakes</h1>
+
+    <!-- Configuration des ressources -->
     <py-config>
         packages = ["pygame-ce"]        
         [[fetch]]
@@ -18,7 +18,10 @@
         to_folder = "asset/fonts"        
     </py-config>
 
-<canvas id="canvas"></canvas>
+    <!-- Le canvas où Pygame va dessiner -->
+    <canvas id="canvas"></canvas>
+
+    <!-- On utilise UNIQUEMENT type="py-game" pour un jeu Pygame -->
     <script type="py-game" src="main.py"></script>
 </body>
 </html>
