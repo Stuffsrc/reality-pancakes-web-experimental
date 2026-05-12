@@ -4,22 +4,20 @@
     <title>Reality Pancakes</title>
     <link rel="stylesheet" href="https://pyscript.net" />
     <script type="module" src="https://pyscript.net"></script>
+
+    <py-config>
+        packages = ["pygame-ce"]
+        
+        [files]
+        # This maps the real file to the virtual location Python sees
+        "asset/fonts/schrift.ttf" = "asset/fonts/schrift.ttf"
+    </py-config>
 </head>
 <body>
     <h1>Reality Pancakes</h1>
-
-    <py-config>
-        packages = ["pygame-ce"]        
-        [[fetch]]
-        # Use relative paths so it works on GitHub Pages
-        from = "./asset/fonts/"
-        files = ["schrift.ttf"]
-        to_folder = "asset/fonts"        
-    </py-config>
-
     <canvas id="canvas"></canvas>
     
-    <!-- Use a relative path here as well -->
-    <script type="py-game" src="./main.py"></script>
+    <!-- Use relative path: no leading slash -->
+    <script type="py-game" src="main.py"></script>
 </body>
 </html>
