@@ -2,26 +2,24 @@
 <html>
 <head>
     <title>Reality Pancakes</title>
-    <!-- Chargement de PyScript -->
     <link rel="stylesheet" href="https://pyscript.net" />
     <script type="module" src="https://pyscript.net"></script>
 </head>
 <body>
     <h1>Reality Pancakes</h1>
 
-    <!-- Configuration des ressources -->
     <py-config>
         packages = ["pygame-ce"]        
         [[fetch]]
-        from = "reality-pancakes/assets/fonts/"
+        # Use relative paths so it works on GitHub Pages
+        from = "./asset/fonts/"
         files = ["schrift.ttf"]
-        to_folder = "reality-pancakes/asset/fonts"        
+        to_folder = "asset/fonts"        
     </py-config>
 
-    <!-- Le canvas où Pygame va dessiner -->
     <canvas id="canvas"></canvas>
-
-    <!-- On utilise UNIQUEMENT type="py-game" pour un jeu Pygame -->
-    <script type="py-game" src="main.py"></script>
+    
+    <!-- Use a relative path here as well -->
+    <script type="py-game" src="./main.py"></script>
 </body>
 </html>
