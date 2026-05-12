@@ -2,19 +2,27 @@
 <html>
 <head>
     <title>Reality Pancakes Web</title>
-    <link rel="stylesheet" href="https://pyscript.net/releases/2026.3.1/core.css" />
-    <script type="module" src="https://pyscript.net/releases/2026.3.1/core.js"></script>
+
+    <link rel="stylesheet"
+          href="https://pyscript.net/releases/2026.3.1/core.css">
+
+    <script type="module"
+            src="https://pyscript.net/releases/2026.3.1/core.js"></script>
 
     <py-config>
         packages = ["pygame-ce"]
+
         [files]
         "assets/fonts/schrift.ttf" = "assets/fonts/schrift.ttf"
-        "assers/musique/music.musicdemo.ogg"
+        "assets/musique/music.musicdemo.ogg" = "assets/musique/music.musicdemo.ogg"
     </py-config>
 </head>
+
 <body>
     <h1>Reality Pancakes Web</h1>
+
     <canvas id="canvas"></canvas>
-    <script type="py-game" src="main.py"></script>
+
+    <script type="py" src="main.py"></script>
 </body>
 </html>
