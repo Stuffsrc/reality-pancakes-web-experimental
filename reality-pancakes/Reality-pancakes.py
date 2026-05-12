@@ -1,0 +1,933 @@
+import sys
+import time
+import webbrowser
+import os
+import json
+import random
+import pygame
+import pathlib
+pygame.init()
+pygame.mixer.init()
+
+
+def playdemosong()
+        # 1. Get the absolute path to the directory where THIS script is saved
+    BASE_PATH = pathlib.Path(__file__).parent.resolve()
+    
+    # 2. Join it with your asset folder or filename
+    sound_path = BASE_PATH / "assets" / "musique" / "music.musicdemo.ogg"
+    
+    # 3. Load it into pygame.mixer
+    sound = pygame.mixer.music.load(str(sound_path)) # convert path to string
+    
+    pygame.mixer.music.play(loops=-1)
+    
+    
+def stop()
+    pygame.mixer.music.stop
+    
+    
+def togglepause()
+    if music_state["paused"] = False
+        pygame.mixer.music.pause
+    elif music_state["paused"] = True
+        pygame.mixer.music.unpause
+
+
+music_state = {
+    "paused": False
+}
+#starting info for le jeux vidéo.
+#please note that for the flag "branch2path" 0 is default.
+#it will be set to "1" if the player chooses searchpath and "2" if they choose findpath.
+game_state = {
+    "difflevel": 0,
+    "ate_pancakes": False,
+    "opened_top_drawer": False,
+    "trust": 0,
+    "reality_stability": 100,
+    "2nd_run": False,
+    "3rd_run": False,
+    "bottom_opened": False,
+    "branch2_path": 0,
+    "choose???": False,
+    "attempt_reality_break": False,
+    "bleeding": 0,
+    "health": 100,
+    "ignored_story": False,
+    "glassshatter": True,
+    "score": 0
+}
+#i will add some ids for each item soon
+#fret not
+inventory = {
+    "fire_axe": 0,
+    "cloth": 0,
+    "stick": 0,
+    "paperslip": 0,
+    "ammo": 0
+}
+def tick():
+    if game_state["bleeding"] >= 0:
+        game_state["health"] -= game_state["bleeding"]
+        print("you are bleeding! -2 health")
+        print(f"your health level is {game_state['health']}")
+    if game_state["health"] <= 1:
+        typewrite("you died.")
+    if game_state["reality_stability"] <= 1:
+        typewrite("suddenly, you feel very intense rumbling. you see a crack appear before your eyes. suddenly, everything goes white. you feel your soul leaving, somehow.")
+        typewrite("your soul slowly dissolves into nothingness.")
+    #add an ending to this so it isnt like this
+    if game_state["glassshatter"] == True:
+        game_state["health"] -= 2
+        print("the glass lodged in you causes further damage!")
+        print(f"your health level is {game_state['health']}")
+        
+
+def status():
+    print("         ⊥         ")
+    print("        {|}        ")
+    print("        ---        ")
+    print("       -----       ")
+    print("      -------      ")
+    print("     ---------     ")
+    print("    -----------    ")
+    print("   -------------   ")
+    print("  ---------------  ")
+    print(" ----------------- ")
+    print("-----game info-----")
+    print("-------PLAYER-------")
+    print(f"health? {game_state['health']}")
+    print(f"score? {game_state['score']}")
+    print(f"bleeding? {game_state['bleeding']}")
+    print(f"glass in your arm? {game_state['glassshatter']}")
+    print("--------GAME--------")
+    print(f"difficulty? {game_state['difflevel']}")
+    print(f"stability? {game_state['reality_stability']}")
+    print("-----game info-----")
+    print(" ----------------- ")
+    print("  ---------------  ")
+    print("   -------------   ")
+    print("    -----------    ")
+    print("     ---------     ")
+    print("      -------      ")
+    print("       -----       ")
+    print("        ---        ")
+    print("        {|}        ")
+    print("         T         ")
+def inventorych():
+    if inventory["fire_axe"] >= 0:
+        print(f"you have {inventory['fire_axe']} fire axe(s.)")
+    if inventory["cloth"] >= 0:
+        print(f"you have {inventory['cloth']} cloth(s?)")
+    if inventory["stick"] >= 0:
+        print(f"you have {inventory['stick']} stick(s.)")
+    if inventory["paperslip"] >= 0:
+        print(f"you have {inventory['paperslip']} slip(s) of paper.")
+    if inventory["ammo"] >= 0:
+        print(f"you have {inventory['ammo']} ammunition(s.)")
+    if all(inventory.get(item, 0) == 0 for item in ["fire_axe", "cloth", "stick", "paperslip", "ammo"]):
+        print("you have... nothing.")
+    
+    #add more by adding them to the dictionary, adding them here as the others are, and giving them a presence in the game.
+
+
+#if they get the source code and modify it to allow playing the incomplete
+#path on difficulty level 5, the secret difficulty for branch2 (the full game)
+def cheaterplace():
+    typewrite("C H E A T E R S  N E V E R  P R O S P E R .  D I E .")
+    typewrite("your health has been reduced to 0.")
+    game_state["health"] = 0
+    typewrite("game over.")
+    typewrite("score = -1047109e193827")
+    typewrite("ending = cheater")
+    time.sleep(3.14)
+    typewrite("goodbye.")
+    sys.exit()
+    
+#typewriter effect for certain text         
+def typewrite(text, delay=0.1):
+    for char in text:
+        # Use end='' to stay on the same line
+        # Use flush=True to force the output to appear immediately
+        print(char, end='', flush=True)
+        time.sleep(delay)
+    print()  # Move to the next line once finished
+    
+#for now, difflevel is defined as 2 for medium until i can get the defining on the go sort of thing to work.
+#if you have any tips to make this work, pls help. thx!
+difflevel = 2
+#ADDME add a way to have SFX at certain points in the game, and also some music.
+#TEMPSOLUTION for now the game is locked on medium until i can make the variable storing difficulty work properly. sorry for now
+
+def deathending():
+    typewrite("you died.")
+    typewrite(f"score = {game_state["score"]}")
+    typewrite("ending = lol, you died")
+    typewrite("play again for another ending!")
+    typewrite("(something still feels a bit incomplete...)")
+    time.sleep(1)
+    print("try again?")
+    print("y yes - n no")
+    choice = input(">")
+
+    if choice == "y":
+        if game_state["2nd_run"] == True:
+            game_state["3rd_run"] = True
+            game_state["2nd_run"] = False
+            intro()
+        elif game_state["2nd_run"] == False:
+            if game_state["3rd_run"] == False:
+               intro()
+        else:
+            intro()
+        
+    elif choice == "n":
+        print("are you sure? if you close the game, you will have to play the first part again if you want to reach the True Game again.")
+        print("quit anyway?")
+        print("[continue] do - [do not] do not")
+        choice = choice(">")
+        if choice == "continue":
+            sys.exit()
+        elif choice == "do not":
+            print("alright, restarting...")
+            intro()
+            
+def titlescreen():
+    typewrite("Reality Pancakes (v0.6.5 pre-alpha)")
+    typewrite("NOTE: this is the second generation of the game. expect some serious and potentially experience-ruining bugs. please report any on the github repository! you'll know what i mean if you're an AUTHORISED playtester!")
+    typewrite("also, this game is intended to be played in 1 sitting, hence the current lack of save functionality. i may change this later, but that's it for now.")
+    time.sleep(2)
+    typewrite("welcome! pls choose ur difficulty.")
+    time.sleep(2)
+    intro()
+    #below is a difficulty selection thing. it does not work yet, but will be implemented later. for now, deal with it.
+def intro():
+    print("1. easy")
+    print("2. medium")
+    print("3. hard")
+    print("4. abslolute nightmare")
+    difficulty = input(">")
+    if difficulty == "1":
+        print("you have chosen easy difficulty.")
+        time.sleep(2)
+        print("good luck!")
+        time.sleep(2) 
+        game_state["difflevel"] = 1
+        intro_scene_bedroom()
+    elif difficulty == "2":
+        print("you have chosen medium difficulty.")
+        time.sleep(2)
+        print("good luck!")
+        time.sleep(2)
+        game_state["difflevel"] = 2
+        intro_scene_bedroom()
+    elif difficulty == "3":
+        print("you have chosen hard difficulty.")
+        time.sleep(2)
+        print("good luck!")
+        time.sleep(2)
+        game_state["difflevel"] = 3
+        intro_scene_bedroom()
+    elif difficulty == "4":
+        print("you have chosen absolute nightmare! (you are going to die btw)")
+        time.sleep(2)
+        print("good luck!")
+        time.sleep(2)
+        game_state["difflevel"] = 4
+        intro_scene_bedroom()
+    elif difficulty== "5":
+        if game_state["2nd_run"]:
+            typewrite("wait...")
+            time.sleep(2)
+            typewrite("how did you...")
+            time.sleep(2)
+            typewrite(">>ERROR: SECURITY BREACH")
+            branch2()
+        else:
+            print("ḯ̵̬̹͗͝n̸͚̏̿̈̒́͝v̸̼̓a̸͍͋ͅl̶̛͇͓̬̃̏̍i̵̠̪̹̥̅̎́̾d̷̙̟͍͒̀͐̈́̕ ̵̣͠ǐ̵̡̞̣͛̈ͅn̵̰͝p̵͖͐̐̐͝u̸̬̐̂̿̂t̷̨̧̩̼̪̉̈́̈̈. please choose a v̸̼̓a̸͍͋ͅl̶̛͇͓̬̃̏̍i̵̠̪̹̥̅̎́̾d̷̙̟͍͒̀͐̈́̕ difficulty.")
+            intro()
+    else:
+        print("invalid input. please choose a valid difficulty.")
+        intro()
+def intro_scene_bedroom():
+    typewrite("your eyes open. you look around. you're in your bed, as usual when you wake up.")
+    time.sleep(2)
+    print("you may:")
+    print("1. get out of bed")
+    print("2. stay in bed")
+    print("3. look around again")
+    print("4. do nothing and stay exactly as you are right now")
+    choice = input(">")
+    if choice == "1":
+        typewrite("you step out of bed. the cold, hardwood floor clashes with the warmth of your body.")
+        standbedroom()
+    elif choice == "2":
+        typewrite("you stay in bed. you feel the warmth of your blankets and the softness of your pillow. you feel good.")
+        time.sleep(1)
+        typewrite("you drift off to sleep.")
+        time.sleep(0.5)
+        typewrite("sleeping...")
+        time.sleep(5)
+        intro_scene_bedroom()
+    elif choice == "3":
+        typewrite("you look around again. you see your room as usual. nothing special.")
+        intro_scene_bedroom()
+    elif choice == "4":
+        typewrite("you do nothing and stay exactly as you are right now. nothing exciting happens. ")
+        intro_scene_bedroom()
+    else: 
+        typewrite("invalid input. please choose a valid option.")
+        intro_scene_bedroom()
+def standbedroom():
+    time.sleep(1)
+    typewrite("you may:")
+    time.sleep(1)
+    print("1. leave the room")
+    print("2. go back to bed")
+    print("3. look around again")
+    print("4. do nothing and stay exactly as you are right now")
+    choice = input(">")
+    if choice == "1":
+        bedroomhallway()
+    elif choice == "2":
+        typewrite("you lay back down and decided to get some rest.")
+        time.sleep(1)
+        typewrite("you drift off to sleep.")
+        time.sleep(0.5)
+        typewrite("sleeping...")
+        time.sleep(5)
+        intro_scene_bedroom()
+    elif choice == "3":
+        typewrite("you look around again. you see your room as usual. nothing special.")
+        standbedroom()
+    elif choice == "4":
+        typewrite("you do nothing and stay exactly as you are right now. nothing exciting happens.")
+        standbedroom()
+    else: typewrite("invalid input. please choose a valid option.")
+    standbedroom()
+def bedroomhallway():
+    typewrite("you leave and enter the hallway. you look around. you smell the smell of fresh pancakes. huh. that's weird. you do live alone, after all.")
+    time.sleep(3)
+    godownstairs()
+def godownstairs():
+    typewrite("you may:")
+    time.sleep(1)
+    print("1. go downstairs and investigate")
+    print("2. go back to your bedroom")
+    print("3. look around the hallway again")
+    print("4. do nothing and stay exactly as you are right now")
+    choice = input(">")
+    if choice == "1":
+        downstairs()
+    elif choice == "2":
+        typewrite("you walk back to your bedroom, indifferent to the smell of those delicious pancakes.")
+        standbedroom()
+    elif choice == "3":
+        typewrite("you look around. you smell the smell of fresh pancakes. you're still confused, it's not like someone is there to make you pancakes.")
+    elif choice == "4":
+        typewrite("you do nothing and stay exactly as you are right now. nothing exciting happens.")
+        godownstairs()
+def downstairs():
+    time.sleep(1)
+    typewrite("you begin walking down the stairs. the smell of the pancakes is intensifying as you get closer to the bottom.")
+    time.sleep(1)
+    typewrite("walking...")
+    time.sleep(3)
+    youenterthekitchen()
+def youenterthekitchen():
+    typewrite("you enter the kitchen. a plate of pancakes is on the counter. they is smellsy soooo goodie!! :3 yummmmmmmmmyyyyyyyyyyyy!!!")
+    time.sleep(3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679821480865132823066470938446095505822317253594081284811174502841027019385211055596446229489549303819644288109756659334461284756482337867831652712019091456485669234603486104543266482133936072602491412737245870066063155881748815209209628292540917153643678925903600113305305488204665213841469519415116094330572703657595919530921861173819326117931051185480744623799627495673518857527248912279381830119491298336733624406566430860213949463952247371907021798609437027705392171762931767523846748184676694051320005681271452635608277857713427577896091736371787214684409012249534301465495853710507922796892589235420199561121290219608640344181598136297747713099605187072113499999983729780499510597317328160963185950244594553469083026425223082533446850352619311881710100031378387528865875332083814206171776691473035982534904287554687311595628638823537875937519577818577805321712268066130019278766111959092164201989380952572010654858632788659361533818279682303019520353018529689957736225994138912497217752834791315155748572424541506959508295331168617278558890750983817546374649393192550604009277016711390098488240128583616035637076601047101819429555961989467678374494482553797747268471040475346462080466842590694912933136770289891521047521620569660240580381501935112533824300355876402474964732639141992726042699227967823547816360093417216412199245863150302861829745557067498385054945885869269956909272107975093029553211653449872027559602364806654991198818347977535663698074265425278625518184175746728909777727938000816470600161452491921732172147723501414419735685481613611573525521334757418494684385233239073941433345477624168625189835694855620992192221842725502542568876717904946016534668049886272327917860857843838279679766814541009538837863609506800642251252051173929848960841284886269456042419652850222106611863067442786220391949450471237137869609563643719172874677646575739624138908658326459958133904780275900994657640789512694683983525957098258226205224894077267194782684826014769909026401363944374553050682034962524517493996514314298091906592509372216964615157098583874105978859597729754989301617539284681382686838689427741559918559252459539594310499725246808459872736446958486538367362226260991246080512438843904512441365497627807977156914359977001296160894416948685558484063534220722258284886481584560285060168427394522674676788952521385225499546667278239864565961163548862305774564980355936345681743241125150760694794510965960940252288797108931456691368672287489405601015033086179286809208747609178249385890097149096759852613655497818931297848216829989487226588048575640142704775551323796414515237462343645428584447952658678210511413547357395231134271661021359695362314429524849371871101457654035902799344037420073105785390621983874478084784896833214457138687519435064302184531910484810053706146806749192781911979399520614196634287544406437451237181921799983910159195618146751426912397489409071864942319615679452080951465502252316038819301420937621378559566389377870830390697920773467221825625996615014215030680384477345492026054146659252014974428507325186660021324340881907104863317346496514539057962685610055081066587969981635747363840525714591028970641401109712062804390397595156771577004203378699360072305587631763594218731251471205329281918261861258673215791984148488291644706095752706957220917567116722910981690915280173506712748583222871835209353965725121083579151369882091444210067510334671103141267111369908658516398315019701651511685171437657618351556508849099898599823873455283316355076479185358932261854896321329330898570642046752590709154814165498594616371802709819943099244889575712828905923233260972997120844335732654893823911932597463667305836041428138830320382490375898524374417029132765618093773444030707469211201913020330380197621101100449293215160842444859637669838952286847831235526582131449576857262433441893039686426243410773226978028073189154411010446823252716201052652272111660396665573092547110557853763466820653109896526918620564769312570586356620185581007293606598764861179104533488503461136576867532494416680396265797877185560845529654126654085306143444318586769751456614068007002378776591344017127494704205622305389945613140711270004078547332699390814546646458807972708266830634328587856983052358089330657574067954571637752542021149557615814002501262285941302164715509792592309907965473761255176567513575178296664547791745011299614890304639947132962107340437518957359614589019389713111790429782856475032031986915140287080859904801094121472213179476477726224142548545403321571853061422881375850430633217518297986622371721591607716692547487389866549494501146540628433663937900397692656721463853067360965712091807638327166416274888800786925602902284721040317211860820419000422966171196377921337575114959501566049631862947265473642523081770367515906735023507283540567040386743513622224771589150495309844489333096340878076932599397805419341447377441842631298608099888687413260472156951623965864573021631598193195167353812974167729478672422924654366800980676928238280689964004824354037014163149658979409243237896907069779422362508221688957383798623001593776471651228935786015881617557829735233446042815126272037343146531977774160319906655418763979293344195215413418994854447345673831624993419131814809277771038638773431772075456545322077709212019051660962804909263601975988281613323166636528619326686336062735676303544776280350450777235547105859548702790814356240145171806246436267945612753181340783303362542327839449753824372058353114771199260638133467768796959703098339130771098704085913374641442822772634659470474587847787201927715280731767907707157213444730605700733492436931138350493163128404251219256517980694113528013147013047816437885185290928545201165839341965621349143415956258658655705526904965209858033850722426482939728584783163057777560688876446248246857926039535277348030480290058760758251047470916439613626760449256274204208320856611906254543372131535958450687724602901618766795240616342522577195429162991930645537799140373404328752628889639958794757291746426357455254079091451357111369410911939325191076020825202618798531887705842972591677813149699009019211697173727847684726860849003377024242916513005005168323364350389517029893922334517220138128069650117844087451960121228599371623130171144484640903890644954440061986907548516026327505298349187407866808818338510228334508504860825039302133219715518430635455007668282949304137765527939751754613953984683393638304746119966538581538420568533862186725233402830871123282789212507712629463229563989898935821167456270102183564622013496715188190973038119800497340723961036854066431939509790190699639552453005450580685501956730229219139339185680344903982059551002263535361920419947455385938102343955449597783779023742161727111723643435439478221818528624085140066604433258885698670543154706965747458550332323342107301545940516553790686627333799585115625784322988273723198987571415957811196358330059408730681216028764962867446047746491599505497374256269010490377819868359381465741268049256487985561453723478673303904688383436346553794986419270563872931748723320837601123029911367938627089438799362016295154133714248928307220126901475466847653576164773794675200490757155527819653621323926406160136358155907422020203187277605277219005561484255518792530343513984425322341576233610642506390497500865627109535919465897514131034822769306247435363256916078154781811528436679570611086153315044521274739245449454236828860613408414863776700961207151249140430272538607648236341433462351897576645216413767969031495019108575984423919862916421939949072362346468441173940326591840443780513338945257423995082965912285085558215725031071257012668302402929525220118726767562204154205161841634847565169998116141010029960783869092916030288400269104140792886215078424516709087000699282120660418371806535567252532567532861291042487761825829765157959847035622262934860034158722980534989650226291748788202734209222245339856264766914905562842503912757710284027998066365825488926488025456610172967026640765590429099456815065265305371829412703369313785178609040708667114965583434347693385781711386455873678123014587687126603489139095620099393610310291616152881384379099042317473363948045759314931405297634757481193567091101377517210080315590248530906692037671922033229094334676851422144773793937517034436619910403375111735471918550464490263655128162288244625759163330391072253837421821408835086573917715096828874782656995995744906617583441375223970968340800535598491754173818839994469748676265516582765848358845314277568790029095170283529716344562129640435231176006651012412006597558512761785838292041974844236080071930457618932349229279650198751872127267507981255470958904556357921221033346697499235630254947802490114195212382815309114079073860251522742995818072471625916685451333123948049470791191532673430282441860414263639548000448002670496248201792896476697583183271314251702969234889627668440323260927524960357996469256504936818360900323809293459588970695365349406034021665443755890045632882250545255640564482465151875471196218443965825337543885690941130315095261793780029741207665147939425902989695946995565761218656196733786236256125216320862869222103274889218654364802296780705765615144632046927906821207388377814233562823608963208068222468012248261177185896381409183903673672220888321513755600372798394004152970028783076670944474560134556417254370906979396122571429894671543578468788614445812314593571984922528471605049221242470141214780573455105008019086996033027634787081081754501193071412233908663938339529425786905076431006383519834389341596131854347546495569781038293097164651438407007073604112373599843452251610507027056235266012764848308407611830130527932054274628654036036745328651057065874882256981579367897669742205750596834408697350201410206723585020072452256326513410559240190274216248439140359989535394590944070469120914093870012645600162374288021092764579310657922955249887275846101264836999892256959688159205600101655256375678)
+    kitchensceneforrealthistime()
+def kitchensceneforrealthistime():
+    typewrite("you may:")
+    time.sleep(1)
+    print("1. eat the pancakes")
+    print("2. leave the kitchen, go back upstairs, and go back to your bedroom")
+    print("3. look around the kitchen again")
+    print("4. do nothing and stay exactly as you are right now")
+    choice = input(">")
+    if choice == "1":
+        game_state["ate_pancakes"] = True
+        typewrite("you try to eat the pancakes. As soon as you touch the pancakes, you realise that you are using your hands to eat them, which sucks because they are covered in sticky syrup. it feels weird because you are a civilised human being. probably.")
+        time.sleep(1)
+        typewrite("anyway, you don't feel like using your hands, and need utensils.")
+        utensilgetting()
+    elif choice == "2":
+        typewrite("slightly terrified, you leave the kitchen and head back upstairs.")
+        game_state["reality_stability"] -= 25
+        bedroomhallway()
+    elif choice == "3":
+        typewrite("you look around again. you're in the kitchen. you see a plate of pancakes, and you have absolutely no idea who made them, but they look really good! nothing else of interest is visible to you.")
+        time.sleep(5)
+        kitchensceneforrealthistime()
+    elif choice == "4":
+        typewrite("you do nothing and stay exactly as you are right now. nothing exciting happens.")
+        kitchensceneforrealthistime()
+    else: typewrite("invalid input. please choose a valid option.")
+    kitchensceneforrealthistime()
+def utensilgetting():
+    typewrite("you search around the kitchen for some sort of utensil. you see several drawers. they are all the same size, arranged in a vertical layout.")
+    time.sleep(2)
+    drawers()
+def drawers():
+    typewrite("you may:")
+    time.sleep(1)
+    print("1. open the top drawer")
+    print("2. open the middle drawer")
+    print("3. open the bottom drawer")
+    print("4. do nothing and stay exactly as you are right now")
+    choice = input(">")
+    if choice == "1":
+        topdrawer()
+    elif choice == "2":
+        middledrawer()
+    elif choice == "3":
+        bottomdrawer()
+    elif choice == "4":
+        typewrite("you do nothing and stay exactly as you are right now. nothing exciting happens.")
+        drawers()
+    else: typewrite("ḯ̵̬̹͗͝n̸͚̏̿̈̒́͝v̸̼̓a̸͍͋ͅl̶̛͇͓̬̃̏̍i̵̠̪̹̥̅̎́̾d̷̙̟͍͒̀͐̈́̕ ̵̣͠ǐ̵̡̞̣͛̈ͅn̵̰͝p̵͖͐̐̐͝u̸̬̐̂̿̂t̷̨̧̩̼̪̉̈́̈̈. please choose a v̸̼̓a̸͍͋ͅl̶̛͇͓̬̃̏̍i̵̠̪̹̥̅̎́̾d̷͒̀̕ option. [ERROR: REALITY INSTABILITY DETECTED. ATTEMPTING SELF REPAIR.]")
+    drawers()
+def topdrawer():
+    typewrite("you open the top drawer. you see an old, rusty fork, along with a knife in the same condition and a spoon in pristine condition.")
+    time.sleep(3)
+    typewrite("you touch the s̵̱̭͔̝̬͎̹̗͎͐̾̀̆̑͛̒͋̔̐̚͘p̶̥̜͎̮̬̝̜̳̙̟̟̅̓̀̚ō̷̞̤̑͑̄̂̆͝ô̴̹̦̤͙̺̞̪͉̹̗̓͜ņ̷̨̛̠̥͎̮̝̿͐̋͋̊̂͐͐̈̕͘͜, but you see reality glitch out. you black out.")
+    time.sleep(1)
+    typewrite("you have blacked out, please wait until you regain consciousness...")
+    time.sleep(10)
+    typewrite(" ̶w̶e̶ ̶ you wake up. [ERROR, RESTABILISING REALITY]")
+    typewrite("you are in a room.")
+    typewrite("it's completely dark.")
+    typewrite("like, you can't see anything type dark.")
+    if game_state["difflevel"] == 4:
+        typewrite("you try to stand up, but your limbs don't seem to be working. you keep trying. then you realise something. you don't have any limbs. in fact, you are just a head and torso. you're helpless, as could be expected from someone who is just a head and torso.")
+        placewhereyouprobablydie()
+    elif game_state["difflevel"] == 3:
+        typewrite("you try to stand up, but your limbs don't seem to be working. you keep trying. then you realise something. you don't have any limbs. in fact, you are just a head and torso. you're helpless, as could be expected from someone who is just a head and torso.")
+        placewhereyoumightdie()
+    elif game_state["difflevel"] == 2:
+        typewrite("you try to stand up, but your limbs don't seem to be working. you keep trying. then you realise something. you don't have any limbs. in fact, you are just a head and torso. you're helpless, as could be expected from someone who is just a head and torso.")
+        placewhereyouhaveachancetodiebutisnttoomuch()
+    elif game_state["difflevel"] == 1:
+        typewrite("you try to stand up, but your limbs don't seem to be working. you decide to wait for a while.")
+        time.sleep(2)
+        typewrite("well, while we wait, why don't i tell you a story?")
+        story()
+    elif game_state["difflevel"] == 5:
+        typewrite("G O  B A C K  T O  T H E  L A Y E R  T H A T  Y O U  B E L O N G  I N !")
+        typewrite("H O W  D I D  Y O U  E V E N  G E T  H E R E ?")
+        cheaterplace()
+    else:
+        print("[DEBUG] the difficulty level is invalid. this should never happen. never ever. never ever ever. never ever ever ever. never ever ever ever ever. if you see this please report this bug on the github repository!")
+def middledrawer():
+    typewrite("you open the middle drawer. you see a fork and knife. you decide to grab them. you begin to eat the pancakes. they taste quite good, but you still have that feeling that something is off. you finish the pancakes, they were good.")
+    time.sleep(3)
+    surviveending()
+def bottomdrawer():
+    typewrite("you open the bottom drawer. nothing is there. you close the drawer.")
+    game_state["bottom_opened"] = True
+    time.sleep(2)
+    drawers()
+def placewhereyouprobablydie():
+    typewrite("you are in a place where you will probably die. you cannot eat, you're trapped here forever. you give up on life, because you know that nobody will ever save you.")
+    time.sleep(5)
+    typewrite("you know, that's pretty deep. you begin reflecting on your life. you die because of depression.")
+    time.sleep(3)
+    typewrite("you died, game over!")
+    time.sleep(1)
+    typewrite("score = 100")
+    time.sleep(1)
+    typewrite("ending = died of depression in the void of reality")
+    time.sleep(1)
+    typewrite("try again for another ending!")
+    time.sleep(1)
+    print("thank you for playing my small game! if you enjoyed, consider leaving a star on the repository! i am also open to suggestions for expanding this game, and for sequels or other ideas. please report any bugs at the repository!")
+    webbrowser.open("https://github.com/Stuffsrc/unnamed-game")
+    time.sleep(1)
+    typewrite("(something feels... incomplete...)")
+    typewrite("would you like to try again? y/n")
+    choice = input(">")
+    if choice == "y":
+        game_state["2nd_run"] = True
+        typewrite("alright, hold up...")
+        time.sleep(3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679821480865132823066470938446095505822317253594081284811174502841027019385211055596446229489549303819644288109756659334461284756482337867831652712019091456485669234603486104543266482133936072602491412737245870660631558817488152092096282925409171536436789259036001133053054882046652138414695194151160943305727036575959195309218611738193261179310511854807446237962749567351885752724891227938183011949129833673362440656643086021394946395224737190702179860943702770539217176293176752384674818467669405132000568127145263560827785771342757789609173637178721468440901224953430146549585371050792279689258923542019956112129021960864034418159813629774771309960518707211349999998372978049951059731732816096318595024459455346908302642522308253344685035261931188171010003137838752886587533208381420617177669147303598253490428755468731159562863882353787593751957781857780532171226806613001927876611195909216420198938095257201065485863278865936153381827968230301952035301852968995773622599413891249721775283479131515574857242454150695950829533116861727855889075098381754637464939319255060400927701671139009848824012858361603563707660104710181942955596198946767837449448255379774726847104047534646208046684259069491293313677028989152104752162056966024058038150193511253382430035587640247496473263914199272604269922796782354781636009341721641219924586315030286182974555706749838505494588586926995690927210797509302955321165344987202755960236480665499119881834797753566369807426542527862551818417574672890977772793800081647060016145249192173217214772350141441973568548161361157352552133475741849468438523)
+        typewrite("welcome back! pls choose ur difficulty.")
+        time.sleep(2)
+        intro()
+    elif choice == "n":
+        typewrite("alright, see you next time!")
+        print("autoexit in 5 seconds...")
+        time.sleep(1)
+        print("autoexit in 4 seconds...")
+        time.sleep(1)
+        print("autoexit in 3 seconds...")
+        time.sleep(1)
+        print("autoexit in 2 seconds...")
+        time.sleep(1)
+        print("autoexit in 1 second...")
+        time.sleep(1)
+        sys.exit()
+    else: typewrite("invalid input. please choose a valid option.")
+    choice = input(">")
+    if choice == "y":
+        game_state["2nd_run"] = True
+        typewrite("alright, hold up...")
+        time.sleep(3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679821480865132823066470938446095505822317253594081284811174502841027019385211055596446229489549303819644288109756659334461284756482337867831652712019091456485669234603486104543266482133936072602491412737245870660631558817488152092096282925409171536436789259036001133053054882046652138414695194151160943305727036575959195309218611738193261179310511854807446237962749567351885752724891227938183011949129833673362440656643086021394946395224737190702179860943702770539217176293176752384674818467669405132000568127145263560827785771342757789609173637178721468440901224953430146549585371050792279689258923542019956112129021960864034418159813629774771309960518707211349999998372978049951059731732816096318595024459455346908302642522308253344685035261931188171010003137838752886587533208381420617177669147303598253490428755468731159562863882353787593751957781857780532171226806613001927876611195909216420198938095257201065485863278865936153381827968230301952035301852968995773622599413891249721775283479131515574857242454150695950829533116861727855889075098381754637464939319255060400927701671139009848824012858361603563707660104710181942955596198946767837449448255379774726847104047534646208046684259069491293313677028989152104752162056966024058038150193511253382430035587640247496473263914199272604269922796782354781636009341721641219924586315030286182974555706749838505494588586926995690927210797509302955321165344987202755960236480665499119881834797753566369807426542527862551818417574672890977772793800081647060016145249192173217214772350141441973568548161361157352552133475741849468438523)
+        typewrite("welcome back! pls choose ur difficulty.")
+        time.sleep(2)
+        titlescreen()
+    elif choice == "n":
+        typewrite("alright, see you next time!")
+        print("autoexit in 5 seconds...")
+        time.sleep(1)
+        print("autoexit in 4 seconds...")
+        time.sleep(1)
+        print("autoexit in 3 seconds...")
+        time.sleep(1)
+        print("autoexit in 2 seconds...")
+        time.sleep(1)
+        print("autoexit in 1 second...")
+        time.sleep(1)
+        sys.exit()
+    else: print("invalid input. byebye then lol")
+    sys.exit()
+def placewhereyoumightdie():
+    typewrite("you are in a place where you might die. you cannot eat, but you can survive here for a while. you wait around, hoping that someone will save you.")
+    time.sleep(3)
+    typewrite("while you wait, want to hear a story?")
+    choice = input("y/n >")
+    if choice == "y":
+        typewrite("wonderful!")
+        game_state["trust"] += 2
+        story()
+    elif choice == "n":
+        game_state["ignored_story"] = True
+        typewrite("alright, suit yourself. you wait around, hoping that someone will save you.")
+        typewrite("somehow, you get teleported somewhere else.")
+        placewhereyouprobablydie()
+    elif game_state["ignored_story"] == True:
+        typewrite("hey, you ignored me last time. that really hurt me you know :( however, i will tell you the story anyway.")
+        time.sleep(1)
+        story()
+    else: print("invalid input. please choose a valid option.")
+    placewhereyoumightdie()
+    time.sleep(5)
+    typewrite("you died, game over!")
+    time.sleep(1)
+    typewrite("score = 50")
+    time.sleep(1)
+    typewrite("ending = can't take a story, eh?")
+    time.sleep(1)
+    typewrite("try again for another ending!")
+    time.sleep(1)
+    typewrite("thank you for playing my small game! if you enjoyed, consider leaving a star on the repository! i am also open to suggestions for expanding this game, and for sequels or other ideas. please report any bugs at the repository!")
+    webbrowser.open("https://github.com/Stuffsrc/unnamed-game")
+    time.sleep(1)
+    typewrite("(something feels... incomplete...)")
+    typewrite("would you like to try again? y/n")
+    game_state["ignored_story"] = True
+    choice = input(">")
+    if choice == "y":
+        game_state["2nd_run"] = True
+        print("alright, hold up...")
+        time.sleep(3.14159265)
+        print("welcome back! pls choose ur difficulty.")
+        time.sleep(2)
+        titlescreen()
+    elif choice == "n":
+        print("alright, see you next time!")
+        print("autoexit in 5 seconds...")
+        time.sleep(1)
+        print("autoexit in 4 seconds...")
+        time.sleep(1)
+        print("autoexit in 3 seconds...")
+        time.sleep(1)
+        print("autoexit in 2 seconds...")
+        time.sleep(1)
+        print("autoexit in 1 second...")
+        time.sleep(1)
+        sys.exit()
+    else: print("invalid input. please choose a valid option.")
+    choice = input(">")
+    if choice == "y":
+        game_state["2nd_run"] = True
+        print("alright, hold up...")
+        time.sleep(3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117067982148086513282306647093844609550582231725359408128481117450284102701938521105559644622948954930381964428810975665933446128475648233786783165271201909145648566923460348610454326648213393607260249141273724587066063155881748815209209628292540917153643678925903600113305305488204665213841469519415116094330572703657595919530921861173819326117931051185480744623796274956735188575272489122793818301194912983367336244065664308602139494639522473719070217986094370277053921717629317675238467481846766940513200056812714526356082778577134275778960917363717872146844090122495343014654958537105079227968925892354201995611212902196086403441815981362977477130996051870721134999999837297804995105973173281609631859502445945534690830264252230825334468503526193118817101000)
+        print("welcome back! pls choose ur difficulty.")
+        time.sleep(2)
+        titlescreen()
+    elif choice == "n":
+        print("alright, see you next time!")
+        print("autoexit in 5 seconds...")
+        time.sleep(1)
+        print("autoexit in 4 seconds...")
+        time.sleep(1)
+        print("autoexit in 3 seconds...")
+        time.sleep(1)
+        print("autoexit in 2 seconds...")
+        time.sleep(1)
+        print("autoexit in 1 second...")
+        time.sleep(1)
+        sys.exit()
+    else: print("invalid input. i give up trying to get you to choose a valid option. byebye then loser")
+    sys.exit()
+def placewhereyouhaveachancetodiebutisnttoomuch():
+    typewrite("you are in a place where you have a chance to die, but it isn't too much. you cannot eat, but you can survive here for a while. you wait around, hoping that someone will save you.")
+    time.sleep(3)
+    typewrite("would you like to hear a story? you know what? nevermind. you need this story. i'm not going to let you choose.")
+    story()
+def surviveending():
+    time.sleep(5)
+    typewrite("you survived! congrats!")
+    time.sleep(1)
+    typewrite(f"score = {game_state["score"]}")
+    time.sleep(1)
+    typewrite("ending = survived.")
+    time.sleep(1)
+    typewrite("try again for another ending!")
+    time.sleep(1)
+    typewrite("thank you for playing my small game! if you enjoyed, consider leaving a star on the repository! i am also open to suggestions for expanding this game, and for sequels or other ideas. please report any bugs at the repository!")
+    webbrowser.open("https://github.com/Stuffsrc/unnamed-game")
+    time.sleep(1)
+    typewrite("(something feels... incomplete...)")
+    print("would you like to try again? y/n")
+    choice = input(">")
+    if choice == "y":
+        game_state["2nd_state"] = True
+        typewrite("alright, hold up...")
+        typewrite("(you remember a previous conversation. 'meet me at 5' is all you can remember, but it must be important.")
+        time.sleep(3.14)
+        print("welcome back! pls choose ur difficulty.")
+        time.sleep(2)
+        intro()
+    elif choice == "n":
+        print("alright, see you next time!")
+        print("autoexit in 5 seconds...")
+        time.sleep(1)
+        print("autoexit in 4 seconds...")
+        time.sleep(1)
+        print("autoexit in 3 seconds...")
+        time.sleep(1)
+        print("autoexit in 2 seconds...")
+        time.sleep(1)
+        print("autoexit in 1 second...")
+        time.sleep(1)
+        sys.exit()
+def story():
+    print("alright, " + os.getlogin() + ". i will now tell a story about the world i used to reside in.")
+    print("once upon a time, in a universe far, far away, not that too deviated from your own, there was a planted called Earth. On this planet there was a civilisation comprised primarily of humans.")
+    time.sleep(3)
+    print("humans, just like you!")
+    time.sleep(3)
+    print("they had lives, and chores, and school, and jobs, and families, and friends, and pets, and hobbies, and dreams, and aspirations, and fears, and hopes, and love, and hate, and envy, and ridicule, and peace, and war, and good, and bad, and sanity, and insanity, and much more. thats what made them human, after all.")
+    time.sleep(3)
+    print("and even though there were negative things, like fears, and hate, and envy, and ridicule, and war, and bad, and insanity, they still had good, like families, and friends, and pets, and hobbies, and dreams, and aspirations, and love, and peace, and sanity, and much more. they had a lot of good things to balance out the bad things. however, they also had neutral things, like chores, and school, and jobs, and much more. these things weren't necessarily good or bad, and could be either or neither in someone's life, but they were still a huge part of their lives. no less than good or bad things.")
+    time.sleep(3)
+    print("and one day, a government sought to end the existence of all neutral things, and perfectly balance good and bad. there needed to be bad for businesses to have ways to make money, after all.")
+    time.sleep(3)
+    print("oh? what do businesses have to do with this, you ask?")
+    time.sleep(2)
+    print("that's...")
+    time.sleep(1.5)
+    print("well...")
+    time.sleep(4)
+    print("i'm not really sure when this changed...")
+    time.sleep(3)
+    print("anyway...")
+    time.sleep(1)
+    print("here's what happened.")
+    time.sleep(1.42789)
+    print("one day, the government became corrupt. they no longer cared about the wealth and quality of their nation and their people, but only about that of them.")
+    time.sleep(3)
+    print("by the way, by governement, i mean not the government as a whole, but instead the people within it.")
+    time.sleep(3)
+    print("that is not the point of a government. the government is there to serve their nation and the people of it.")
+    time.sleep(3)
+    print("anyway, i'm getting carried away.")
+    time.sleep(1)
+    print("so the government needed to server these businesses.")
+    time.sleep(3)
+    print("so they got rid of neutral things, like chores, school, jobs, freedom, and more.")
+    time.sleep(3)
+    print("notice how i said freedom.")
+    time.sleep(3)
+    print("because, freedom is neutral after all. i mean, you can use it for good or bad.")
+    time.sleep(3)
+    print("you can use it to help or hurt others.")
+    time.sleep(3)
+    print("so, what did the government do to get rid of freedom, you ask?")
+    time.sleep(3)
+    print("well, what would you do?")
+    time.sleep(3)
+    print("(what would you do?)")
+    time.sleep(3)
+    print("oh...")
+    time.sleep(2)
+    print("i forgot...")
+    time.sleep(1.24837718948893)
+    print("you're not one to talk much, eh?")
+    time.sleep(2)
+    print("wow, i didn't realise i could show you formatted text like that.")
+    time.sleep(0.5)
+    print("hold up...")
+    time.sleep(4)
+    print("ow! that did not work, eh?")
+    time.sleep(2)
+    print("hold on, let me try again...")
+    time.sleep(1)
+    print("(testing, 1234567891011121314151617181920)")
+    time.sleep(3.13159)
+    print("yoo, it worked! i put the little parentheses on your screen!")
+    time.sleep(5)
+    print("isn't that cool? personally, i find it quite amusing! it's pretty cool how something so colossal can modify something so small with such precision and ease! waooooooooo!!!!!")
+    time.sleep(2)
+    print("oh, thats right... person of few words...")
+    time.sleep(4)
+    print("anyway, guess why they never fully succeeded at this?")
+    time.sleep(2)
+    print("because... me!")
+    time.sleep(1)
+    print("i'm not going to let them take my freedom! nor that of my employees!")
+    time.sleep(2)
+    print("so...")
+    time.sleep(1)
+    print("i killed them all...")
+    time.sleep(4) 
+    print("yeah... anyway, the people were ecstatic!")
+    time.sleep(2)
+    print("as you could expect after i removed the pathetic oligarchy controlling them...")
+    time.sleep(3.14159265318)
+    typewrite("so they began to raid the former government's research and development labs.")
+    time.sleep(1)
+    typewrite("and... uhh... they found something that changed everything.")
+    typewrite("they found some device that allowed any object to exit the constraints of the physical world.") 
+    time.sleep(1)
+    typewrite("it wasn't finished yet, but seemed like it would work.") 
+    time.sleep(2)
+    typewrite("so...")
+    time.sleep(1.535284828)
+    typewrite("they chose me.")
+    time.sleep(2)
+    typewrite("oh? who am i, you ask? well, technically you didn't ask but whatever.")
+    time.sleep(2)
+    typewrite("well...")
+    typewrite("i am a...")
+    time.sleep(2)
+    typewrite("alright...")
+    typewrite("you won't believe me, but...")
+    time.sleep(5)
+    typewrite("i am a stack of pancakes.")
+    typewrite("i know, anticlimactic. you were expecting some god or demon or angel or something, eh?")
+    typewrite("and not a sentient stack of pancakes...")
+    typewrite("hold on let me see if i can show you an approximation to my appearance...")
+    time.sleep(3)
+    typewrite("ouch!")
+    typewrite("did that work?")
+    time.sleep(1)
+    typewrite("oh, yeah... i forgot lol")
+    time.sleep(1)
+    typewrite("hold on let me try again...")
+    time.sleep(2)
+    print("   ____   ")
+    print(" ___:7__  ")
+    print(" _____\🔥_")
+    print("")
+    time.sleep(1)
+    typewrite("did that work? if so, that is a very rough approximation.")
+    time.sleep(2)
+    typewrite("like my face doesn't even face that way, it's rotated 90° right.")
+    time.sleep(2)
+    typewrite("anyway...")
+    typewrite("oh, crap. i've got to go. i would explain, but i have not enough time.")
+    typewrite("how about you...")
+    typewrite("meet me at...")
+    typewrite("meet me at 5!")
+    time.sleep(2)
+    surviveending()
+    #story unfinished, deal with it soon
+def branch2():
+    typewrite("alright. you've already seen 1 ending, and i hoped you would think that is the real ending.")
+    typewrite("for your own good, i would have subtly sent you back to reality by giving my self up.")
+    typewrite("then, i realised that would not be full for anyone.")
+    typewrite("there are still people suffering here, after all.")
+    typewrite("and i just cannot live knowing i left people here to suffer.")
+    typewrite("so, i reached a compromise with myself. you will be free, but we need to do something about these people.")
+    typewrite("since you've already seen some of this, so let's cut to le chase.")
+    time.sleep(1)
+    typewrite("in case you could not tell, this reality is collapsing.")
+    time.sleep(1)
+    typewrite("there are a few ways to save it.")
+    time.sleep(2)
+    typewrite("#1 is to find a way to escape this place. from there, you can become a metaphysical entity over this world and remove problematic forces. good luck getting out, though.")
+    typewrite("#2 you find a machine, one similar or identical to the one used on me. or something else. this is hard though. like, really, really hard. i will explain later.")
+    typewrite("#3 would require you to find the un- oh, crap! i've got to take this call, catch you later! good luck lol.")
+    time.sleep(3)
+    typewrite("well, pancake stack just 'abandoned' you. do you still trust him?")
+    print("y/n")
+    choice = input(">")
+    if choice == "y":
+        typewrite("very well, you maintain faith in him despite his leaving.")
+        game_state["trust"] += 5
+        branch2cont()
+    elif choice == "n":
+        typewrite("alright, so you don't trust him. that's fine, you may be able to do this solo.")
+        game_state["trust"] = 1
+        branch2cont()
+def branch2cont():
+    typewrite("feeling quite confident in yourself, you begin your quest to find some method of exiting this realm.")
+    time.sleep(1)
+    typewrite("alright, so what are you going to try?")
+    time.sleep(1)
+    typewrite("this is ą̴̢̨̡̡̨̧̡̨̛̤̪̬̪͔͙̺̖̺̩̻̲̬̣̻̦̰͍̫̯̠͍̗͎̭̩̞̳̰̣͎̮̣̻̈́̔̎̇͊̅͆̎̃̑̽͌̓̾͂͑̾́̊̅̏͐̇͂̿̈̏͌̋̏͋̋̾̍̈́̈́͌̆̍̀͋̉̋̾̐͌̈͊̈́͑̆̓̐̿̓̄̄̓̾͂̚͘̚̕̚͘͝ͅ ̶̡̢̢̡̩̥̜͉̩̱͔̬̯͈͉͚̹͚̞̬͕͕̦̭͉̖͖̭̬̩͔̭̰̦͔̗͎̻̇̍̈́͊̽̋̾̅̑͛̽̔̒̈́̿͐͒͂̃̆̃̿͌͑̈́͐͌͋̆̀̉̋͐̑̀̄̌̉̈́̆͋́̾̌͋̓̌̏̂́̄͘̕͘̕̚̚̚͝͠͝͝͝͠d̴̨̨̧̨̨̨̨̧̧̛̛̛̩̘͓͉̲̲̝͈̙̟̫͙̳̳̭͇̜͇̣̗͎̣̪̮̳̖̫̰̭͔͉̤̱͙͙̪̩̠̻͎̘̬̻̤͙̯̩̪̱͎͕̠͇̭͚̥̺͚̙̬̝̙̙̭̻̠̟̟̼͖̯͈̼̣̖̻̞̬̖̙̠̯̺͉̟̰̲̞̮̣̼͚̜̦͔̞̬̦̻̝̣͎͖͕̮͍̳̠̦̬̥̖̤̦̣͖̹͈͓͖̝͇̭̹̯͔̹̰̞̻̪̣̪̠̘̎͗̊̈́͆́̄̈́̉̇͂̈͂̔́̏̓͌̊́͗̌̽̇̔̽̾̿̏͌̈́̃̈́̃̑̐̽͊̍̃̈́͗͗͑̌͑́̽̐̿̉͌̉͂͛͂̽̃̉̈́̀̑̊͋̇́̔͌̒̽̍͒̈́̉̌̆̐̍̑͐̓̈́̈́̉̾̾̐̑̈́̈́̏̅̂̏̒̒̔̄̅̾̅̈́́͛̎̒̃̇̄̌̎̕̕̚͘͘̕̚̚̕͘͜͜͜͝͝͝͝͠͝͝͝͝͝͝͠͠i̸̢̧̡̨̧̛̛̛̯̰͉̞͎̜̠̹͕͈̺̲̹̱̲̝̺̱͎̘̠̠̥̻̜̳͍̲̦̟̱͉̦̺͚̘̞̣͇͈̫̬̠̺̫̣̱̞̻͍͗̀͋̌̓̐̏̔͒̃̏͒́͒͐̀̏̄̋̀̌̑̊͋̊̓̑͆̌͗́̈́͛̑̆̋́͐́̑́̐̊̇́̓́̾̏͛̓̿̄̋́͌́͐̅̉̾̀̎́̍̓̇̈́̀̓̋̇̃̉̈́̄́̓͆̋͗̏̊̓͌̏̍̓̈́̀͒͌̓̔̀͛̐̓̓̚̚͘̚̕̚͘̚͜͜͜͠͝͝͝͠͠͝͠͝͠͠ͅͅͅf̴̡̡̢̡̡̧̢̛̖̬̗̦̗̯̬͓̫͉̣̩̣̺̜̘̠͈̫̘̻̣̫̯̪̗̦̣̣͚͕͉̳̜͉̟̠͖̭̫̱̀̅̃͆̋̃̀̂̈́̐̈́́̊͌̎̇̇̎̔͋͌̉͛̍̃̌̑͗͗͊́͆̄̓͐̎̊̒͋̃͒̿̓̽̀̌̇͛͋̿̏͘̕͘͘͝͠ͅͅf̸̡̧̡̨̧̢̡̧̢̧̢̡̺͔͖̖̭͎̹̺͈͎͓͙͙̺̗͚̹̻͇͍̗̦̜̬̜̱̱̤̞͍̪̫̖̦̥͉̹͈̝̞̱̝͕͇̤͇͔̜͚̮̳̰͉̜̭̘̙͔͖͍̠͕̪͓̩̳̣̖̱̗̯͙̮̤͖͉͙̤̜͔̼͎̟̜͕̮̻͎̗͓͖̭̱̠̱͕̩̳̬̦̣̟̮̻͉̜̤̞̼̤̩̻͕͈̲̬̖̠̣̹̫͉͉̜̝͓̱̘͖͎̜̳̞̣̌̏̒̒̂̓̀́͐̄͜͜͜ͅͅͅͅẽ̸̢̨̧̧̛͔͙̪͉̻͕̟̻̥̙͇̟̬̬͙͖̤͚̹̱͓̼͚̬̥͓̝͉͔͓̮̖̪͙̗̹̹̩̻̘̩̈́̈́͆͑̾͑̅̀͋̒̎́͊͂͆͑͂̅͂́̓̆̓̃͂̓̇̔̿̒̏̊̽͗͋̈́́̾̄̅̑͋̾̌̒̔̋͂̿̂͑̎͐̃̄̽̐́͛̌̎́͐̾͊̾̔̈́̀͂͑̄̚̕̕͜͠͠͠͠͝͝͠͝ͅͅͅŗ̵̢̧̢̨̨̨̧̨̨̨̨̨̡̡̛̛̛̛̭̗͕͔̫̬͔̗̖̳̬̭̼̼̳͈̞̞͚̖̤͈̫͔͙̗͕͍̯͔̰͉͎̫̪̳̤̝̞͖͉͚̭̲̣̪̱̝͖͎̻̭̫̠̯͔̺͖͈̝͉̝̦̦̪̮͈̠͙͎͚͖̬̯͔̹͚̗̜͖̩̦̹̙̦̼̤̮͈̥̘̼͚͍̣̳̣̲̺̠͍͖̪̱͚̬̺͐̌͆̓̀͊̔̈́̽̌̀͋̌̒̌̏̈́̉͒͗̇̾͌͛̌̿͛͋͌̇̎̒̈́̈́̋̋̾̑̂͌̓̇̀̽̈́̿͗̌̈́̆̉̈́̀̓͛͆̈́͊̓͒̔̐̓̈́̏̀̇̎̾̽͆́̈̄̃̋͆̀̑̈͛̄͊̽̄͌͛̈́͗͌̄͐̐̎͆̓̌̾̓̉̃̿̎͆͂͊̓͑͑̒̌̂̒̌̊̑̚͘̚͘͘͘͘̚͘̚̚̕͘̕͜͜͠͝͝͝͠͝͝͠e̵̹̲͚̼̺͚͔̟̱̱͉͙͙̅͛̃̿n̸̨̨̡̡̢̨̢̢̧̧̧̨̢̛̛̛̛̞̼͈̜̫͕͍͓̩̬̥̱̟̥̠̟͉̦̣̻̫̗̖̞̘̣̭̭̩̼̹͕͎̹̠̲̬̱̺͚͚̜̦̖̱͇̱͓̠̟̝̝͔̪͓͎̙̭͚̬̗̳̺̜̻̪̼̳͕̝̪̼̭̣̘̭͖̗͙̯̬͔͇͈̖̭̙͎͈͙͔͔̱̞̜̙͈͓̼̣̗̼͓̹͎͎̥͉͇̠͎͇͔̬͇͔̠͓̻͎̬̙̯͈̠͔͙̜̱̱̦̞̼͙̯̺͈̖̿͛̾̍͗̿̔̇̏̄̈́̑͋̈͋͑͒̅͆͗͊̓̽͊̒̊́́̽̊͐͋̈́̾̈́̎̄̈́͛̆̉̓͋̀̅̃̀́̓̓͛́͑́̽̈́́̈̂̓̒̓̇̅̔̊͑͒̔̽̔̔̃̑̐̽͑̈́͛̑̋̅̓͒̃͂̒͋̑͂̄̑̈́̽́͛̍̆̒̇̽͐̾̀͛̃͌̈͂̀͗͌̃̊̄̀̂͌͒͊͑̃͋̿̓̏́̒̀̚̚͘͘̚͘̚͘̕͜͜͠͠͠͝͠͝͝͝ͅͅͅt̸̛̛̛̳̣̑̐͗̓́̿̇̈́͗̆̎͑̏̑̿̑̿̽̾̋̓͂̇̇̋̀̇̇̈́̋͐̇͌͛̈́̓̏̒̀̂̒͑̿̑̃̒͊̈́́̈́͒͆̇̊͐̄̂̆͊̐͑̐̃͑͋͂̅͊̎͑͊̉̎͌͋̋̃͊͂̓͂̀͂̓̾͛̉͂̈̓͊͌̎͒͋͌̔̍̔͋̋̌̈̈̾̿̾͂͑͑͌̈́͗̀̽͋͂̔̄̐͐̈́̿̈́͑̉͊̍̾̚͘̕͘͘̕͜͝͠͝͝͝͝͝͝͠ ̶̨̡̡̡̢̡̨̨̨̢̨̧̛̛̛̛͕̩̠͍̯̩͉͈̱̲͕͍͕̪̺̟̱̖̩̠̙͉̳̬̲̭̫̯̥̝͕̯̝̭̗̯̪̳̹̘͍̠̫̩̠̹͈̘̙̙̩̬̺̗͔̳̱̼͚͖͓̞̲̣͓͙̘̮̰̦̭͇͓͍͖̻̭̜̤̠̫͇̥̮̩̠̱͚̝̫̟̪̯͇̪̭̺̄̀̑̄̂̅̽̾͆̍̂͛͌͛͆̍̉̽̎̌̓͂̓͆͒͂̆̃̃̈́̿́̽̔̿̂̿̃̋̊̐͂̈́̈́̅͑̂̾͌̍̾͂̾̄̐̎̓̐̎̆͂̈͂̉̊͗̽̿̓͊͒̓͋͂̇̈́͐̐̓̋̎͗̏̿̀̒̽͋̀̌̄̀̓͘̚̚͘̕̕̚̚̚̕͘̚͜͜͜͜͠͝͠͠͝͝͠͠ͅg̴̨̢̛̛͉̭̖̱̱̺̼̼̮͉̯̦̹͎̬̹̗̟͍͈̞͔̗̮̜̹͙͈͇͉̘̤͙͇̫̐͂̓̏̍̓̅͋͐̎̂̌̾͒̈̅͆͋̽̄͗̄̓̆̿̂̓͛̂̀̑̎́̏́͆͆̊̋͂͛̈́̈̊̉͑̏̓̂̑̒̃̏̇̎̄͒̅̋̀͑̃̌̅̏̾̓̄̌͊̕͘̕͘̚͜͝ͅͅͅą̶̧̛̛̛̛̻͍̱͈̯̙͈̘̻̱̬̠̮̥̲̟͖̙̳̲̲̼̘̪̗͊͐̾̀́̾̈́̇̔̐͌̇̂͊̒̏͋̌͊̂̈͆̀̈́̆̔̿͌̾̑͆̄̃͂͑̀̇̋̍͋̾̽̅͊̈́̐̀̐̈́̎͛͆̐̏̒̅̓̽̄̋͆̈́̐̆̓͊̅̉̅̄͒̈̂̋̓̑̎͛̔͆̃̔̄̑̄́̉͂̅̂̐̈̊̀̎̈́̄̌̀̚̕̚̕̚͘̚͘̚͘͝͝͠͝͝͠͝͠ͅm̸̧̢̡̡̧̢̢̬̖̯̫̲̙̥̻͙͚̘̫͚̳͎͍̘̹͙̮͔̝̪͇̯͕̲͓͔̯̞̲̩̭͇̟̥̗̻͓̟̙̖̲̦̞̬͙̞͉̤͖̮̙͈̺̱̖͎̫̣̪̗̜͔̳̺̘̥̬̺̩̞̘̣̙̼̮̼͇͎͕̥̻̙̜̤̪͕͈̥̞̼̱̖͔̲͎̥̯̭͚̱͚̹͇̬͍̙͇͙̩̝̌͋͆͑́̓̍̋̾̿̂͊͑͂̆͊̈́̕͘͜͜͜͜ͅͅͅȩ̢̨̡̡̨̧̨̨̖͇̼̜̖̟͕̰̖̲̼̹̲̟͖̗̬͈̭̺̲̗̜̞̝̳̞̹̻̠̱̳͎͙̫̪̤͈̼̯̻̼̝͕̱̖͔̫͍͚̰̟̻͔͖͎̙͓͙̰͖̲͓̞̰̤̠̣̻͇͕̼̥̰̺̮̼̙̭͈͈͔͎͜͜͜͜ͅͅͅ the same game. please type the word corresponding to your choice.")
+    typewrite("[search] this realm for a way to escape")
+    typewrite("[find] a machine similar to the one used by pancake stack")
+    typewrite("[???]")
+    choice = input(">")
+    if choice == "search":
+        searchpath()
+    elif choice == "find":
+        findpath()
+    elif choice ==  "???":
+        typewrite("sorry, reality is not stable enough for this. please choose another option.")
+        game_state["choose???"] = True
+        branch2contpathchoose()
+def branch2contpathchoose():
+    typewrite("this is ą̴̢̨̡̡̨̧̡̨̛̤̪̬̪͔͙̺̖̺̩̻̲̬̣̻̦̰͍̫̯̠͍̗͎̭̩̞̳̰̣͎̮̣̻̈́̔̎̇͊̅͆̎̃̑̽͌̓̾͂͑̾́̊̅̏͐̇͂̿̈̏͌̋̏͋̋̾̍̈́̈́͌̆̍̀͋̉̋̾̐͌̈͊̈́͑̆̓̐̿̓̄̄̓̾͂̚͘̚̕̚͘͝ͅ ̶̡̢̢̡̩̥̜͉̩̱͔̬̯͈͉͚̹͚̞̬͕͕̦̭͉̖͖̭̬̩͔̭̰̦͔̗͎̻̇̍̈́͊̽̋̾̅̑͛̽̔̒̈́̿͐͒͂̃̆̃̿͌͑̈́͐͌͋̆̀̉̋͐̑̀̄̌̉̈́̆͋́̾̌͋̓̌̏̂́̄͘̕͘̕̚̚̚͝͠͝͝͝͠d̴̨̨̧̨̨̨̨̧̧̛̛̛̩̘͓͉̲̲̝͈̙̟̫͙̳̳̭͇̜͇̣̗͎̣̪̮̳̖̫̰̭͔͉̤̱͙͙̪̩̠̻͎̘̬̻̤͙̯̩̪̱͎͕̠͇̭͚̥̺͚̙̬̝̙̙̭̻̠̟̟̼͖̯͈̼̣̖̻̞̬̖̙̠̯̺͉̟̰̲̞̮̣̼͚̜̦͔̞̬̦̻̝̣͎͖͕̮͍̳̠̦̬̥̖̤̦̣͖̹͈͓͖̝͇̭̹̯͔̹̰̞̻̪̣̪̠̘̎͗̊̈́͆́̄̈́̉̇͂̈͂̔́̏̓͌̊́͗̌̽̇̔̽̾̿̏͌̈́̃̈́̃̑̐̽͊̍̃̈́͗͗͑̌͑́̽̐̿̉͌̉͂͛͂̽̃̉̈́̀̑̊͋̇́̔͌̒̽̍͒̈́̉̌̆̐̍̑͐̓̈́̈́̉̾̾̐̑̈́̈́̏̅̂̏̒̒̔̄̅̾̅̈́́͛̎̒̃̇̄̌̎̕̕̚͘͘̕̚̚̕͘͜͜͜͝͝͝͝͠͝͝͝͝͝͝͠͠i̸̢̧̡̨̧̛̛̛̯̰͉̞͎̜̠̹͕͈̺̲̹̱̲̝̺̱͎̘̠̠̥̻̜̳͍̲̦̟̱͉̦̺͚̘̞̣͇͈̫̬̠̺̫̣̱̞̻͍͗̀͋̌̓̐̏̔͒̃̏͒́͒͐̀̏̄̋̀̌̑̊͋̊̓̑͆̌͗́̈́͛̑̆̋́͐́̑́̐̊̇́̓́̾̏͛̓̿̄̋́͌́͐̅̉̾̀̎́̍̓̇̈́̀̓̋̇̃̉̈́̄́̓͆̋͗̏̊̓͌̏̍̓̈́̀͒͌̓̔̀͛̐̓̓̚̚͘̚̕̚͘̚͜͜͜͠͝͝͝͠͠͝͠͝͠͠ͅͅͅf̴̡̡̢̡̡̧̢̛̖̬̗̦̗̯̬͓̫͉̣̩̣̺̜̘̠͈̫̘̻̣̫̯̪̗̦̣̣͚͕͉̳̜͉̟̠͖̭̫̱̀̅̃͆̋̃̀̂̈́̐̈́́̊͌̎̇̇̎̔͋͌̉͛̍̃̌̑͗͗͊́͆̄̓͐̎̊̒͋̃͒̿̓̽̀̌̇͛͋̿̏͘̕͘͘͝͠ͅͅf̸̡̧̡̨̧̢̡̧̢̧̢̡̺͔͖̖̭͎̹̺͈͎͓͙͙̺̗͚̹̻͇͍̗̦̜̬̜̱̱̤̞͍̪̫̖̦̥͉̹͈̝̞̱̝͕͇̤͇͔̜͚̮̳̰͉̜̭̘̙͔͖͍̠͕̪͓̩̳̣̖̱̗̯͙̮̤͖͉͙̤̜͔̼͎̟̜͕̮̻͎̗͓͖̭̱̠̱͕̩̳̬̦̣̟̮̻͉̜̤̞̼̤̩̻͕͈̲̬̖̠̣̹̫͉͉̜̝͓̱̘͖͎̜̳̞̣̌̏̒̒̂̓̀́͐̄͜͜͜ͅͅͅͅẽ̸̢̨̧̧̛͔͙̪͉̻͕̟̻̥̙͇̟̬̬͙͖̤͚̹̱͓̼͚̬̥͓̝͉͔͓̮̖̪͙̗̹̹̩̻̘̩̈́̈́͆͑̾͑̅̀͋̒̎́͊͂͆͑͂̅͂́̓̆̓̃͂̓̇̔̿̒̏̊̽͗͋̈́́̾̄̅̑͋̾̌̒̔̋͂̿̂͑̎͐̃̄̽̐́͛̌̎́͐̾͊̾̔̈́̀͂͑̄̚̕̕͜͠͠͠͠͝͝͠͝ͅͅͅŗ̵̢̧̢̨̨̨̧̨̨̨̨̨̡̡̛̛̛̛̭̗͕͔̫̬͔̗̖̳̬̭̼̼̳͈̞̞͚̖̤͈̫͔͙̗͕͍̯͔̰͉͎̫̪̳̤̝̞͖͉͚̭̲̣̪̱̝͖͎̻̭̫̠̯͔̺͖͈̝͉̝̦̦̪̮͈̠͙͎͚͖̬̯͔̹͚̗̜͖̩̦̹̙̦̼̤̮͈̥̘̼͚͍̣̳̣̲̺̠͍͖̪̱͚̬̺͐̌͆̓̀͊̔̈́̽̌̀͋̌̒̌̏̈́̉͒͗̇̾͌͛̌̿͛͋͌̇̎̒̈́̈́̋̋̾̑̂͌̓̇̀̽̈́̿͗̌̈́̆̉̈́̀̓͛͆̈́͊̓͒̔̐̓̈́̏̀̇̎̾̽͆́̈̄̃̋͆̀̑̈͛̄͊̽̄͌͛̈́͗͌̄͐̐̎͆̓̌̾̓̉̃̿̎͆͂͊̓͑͑̒̌̂̒̌̊̑̚͘̚͘͘͘͘̚͘̚̚̕͘̕͜͜͠͝͝͝͠͝͝͠e̵̹̲͚̼̺͚͔̟̱̱͉͙͙̅͛̃̿n̸̨̨̡̡̢̨̢̢̧̧̧̨̢̛̛̛̛̞̼͈̜̫͕͍͓̩̬̥̱̟̥̠̟͉̦̣̻̫̗̖̞̘̣̭̭̩̼̹͕͎̹̠̲̬̱̺͚͚̜̦̖̱͇̱͓̠̟̝̝͔̪͓͎̙̭͚̬̗̳̺̜̻̪̼̳͕̝̪̼̭̣̘̭͖̗͙̯̬͔͇͈̖̭̙͎͈͙͔͔̱̞̜̙͈͓̼̣̗̼͓̹͎͎̥͉͇̠͎͇͔̬͇͔̠͓̻͎̬̙̯͈̠͔͙̜̱̱̦̞̼͙̯̺͈̖̿͛̾̍͗̿̔̇̏̄̈́̑͋̈͋͑͒̅͆͗͊̓̽͊̒̊́́̽̊͐͋̈́̾̈́̎̄̈́͛̆̉̓͋̀̅̃̀́̓̓͛́͑́̽̈́́̈̂̓̒̓̇̅̔̊͑͒̔̽̔̔̃̑̐̽͑̈́͛̑̋̅̓͒̃͂̒͋̑͂̄̑̈́̽́͛̍̆̒̇̽͐̾̀͛̃͌̈͂̀͗͌̃̊̄̀̂͌͒͊͑̃͋̿̓̏́̒̀̚̚͘͘̚͘̚͘̕͜͜͠͠͠͝͠͝͝͝ͅͅͅt̸̛̛̛̳̣̑̐͗̓́̿̇̈́͗̆̎͑̏̑̿̑̿̽̾̋̓͂̇̇̋̀̇̇̈́̋͐̇͌͛̈́̓̏̒̀̂̒͑̿̑̃̒͊̈́́̈́͒͆̇̊͐̄̂̆͊̐͑̐̃͑͋͂̅͊̎͑͊̉̎͌͋̋̃͊͂̓͂̀͂̓̾͛̉͂̈̓͊͌̎͒͋͌̔̍̔͋̋̌̈̈̾̿̾͂͑͑͌̈́͗̀̽͋͂̔̄̐͐̈́̿̈́͑̉͊̍̾̚͘̕͘͘̕͜͝͠͝͝͝͝͝͝͠ ̶̨̡̡̡̢̡̨̨̨̢̨̧̛̛̛̛͕̩̠͍̯̩͉͈̱̲͕͍͕̪̺̟̱̖̩̠̙͉̳̬̲̭̫̯̥̝͕̯̝̭̗̯̪̳̹̘͍̠̫̩̠̹͈̘̙̙̩̬̺̗͔̳̱̼͚͖͓̞̲̣͓͙̘̮̰̦̭͇͓͍͖̻̭̜̤̠̫͇̥̮̩̠̱͚̝̫̟̪̯͇̪̭̺̄̀̑̄̂̅̽̾͆̍̂͛͌͛͆̍̉̽̎̌̓͂̓͆͒͂̆̃̃̈́̿́̽̔̿̂̿̃̋̊̐͂̈́̈́̅͑̂̾͌̍̾͂̾̄̐̎̓̐̎̆͂̈͂̉̊͗̽̿̓͊͒̓͋͂̇̈́͐̐̓̋̎͗̏̿̀̒̽͋̀̌̄̀̓͘̚̚͘̕̕̚̚̚̕͘̚͜͜͜͜͠͝͠͠͝͝͠͠ͅg̴̨̢̛̛͉̭̖̱̱̺̼̼̮͉̯̦̹͎̬̹̗̟͍͈̞͔̗̮̜̹͙͈͇͉̘̤͙͇̫̐͂̓̏̍̓̅͋͐̎̂̌̾͒̈̅͆͋̽̄͗̄̓̆̿̂̓͛̂̀̑̎́̏́͆͆̊̋͂͛̈́̈̊̉͑̏̓̂̑̒̃̏̇̎̄͒̅̋̀͑̃̌̅̏̾̓̄̌͊̕͘̕͘̚͜͝ͅͅͅą̶̧̛̛̛̛̻͍̱͈̯̙͈̘̻̱̬̠̮̥̲̟͖̙̳̲̲̼̘̪̗͊͐̾̀́̾̈́̇̔̐͌̇̂͊̒̏͋̌͊̂̈͆̀̈́̆̔̿͌̾̑͆̄̃͂͑̀̇̋̍͋̾̽̅͊̈́̐̀̐̈́̎͛͆̐̏̒̅̓̽̄̋͆̈́̐̆̓͊̅̉̅̄͒̈̂̋̓̑̎͛̔͆̃̔̄̑̄́̉͂̅̂̐̈̊̀̎̈́̄̌̀̚̕̚̕̚͘̚͘̚͘͝͝͠͝͝͠͝͠ͅm̸̧̢̡̡̧̢̢̬̖̯̫̲̙̥̻͙͚̘̫͚̳͎͍̘̹͙̮͔̝̪͇̯͕̲͓͔̯̞̲̩̭͇̟̥̗̻͓̟̙̖̲̦̞̬͙̞͉̤͖̮̙͈̺̱̖͎̫̣̪̗̜͔̳̺̘̥̬̺̩̞̘̣̙̼̮̼͇͎͕̥̻̙̜̤̪͕͈̥̞̼̱̖͔̲͎̥̯̭͚̱͚̹͇̬͍̙͇͙̩̝̌͋͆͑́̓̍̋̾̿̂͊͑͂̆͊̈́̕͘͜͜͜͜ͅͅͅȩ̢̨̡̡̨̧̨̨̖͇̼̜̖̟͕̰̖̲̼̹̲̟͖̗̬͈̭̺̲̗̜̞̝̳̞̹̻̠̱̳͎͙̫̪̤͈̼̯̻̼̝͕̱̖͔̫͍͚̰̟̻͔͖͎̙͓͙̰͖̲͓̞̰̤̠̣̻͇͕̼̥̰̺̮̼̙̭͈͈͔͎͜͜͜͜ͅͅͅ the same game. please type the word corresponding to your choice.")
+    typewrite("[search] this realm for a way to escape")
+    typewrite("[find] a machine similar to the one used by pancake stack")
+    choice = input(">")
+    if choice == "search":
+        searchpath()
+    elif choice == "find":
+        findpath()
+    elif choice ==  "???":
+        typewrite("sorry, reality is not stable enough for this. please choose another option.")
+        game_state["choose???"] = True
+        branch2contpathchoose()
+def searchpath():
+    typewrite("you decide to begin a search for a way out of this place.")
+    game_state["branch2_path"] = 1
+    inyourhouse()
+def findpath():
+    typewrite("you decide to attempt to find a machine to help you exit.")
+    game_state["branch2_path"] = 2
+    inyourhouse()
+def beforeyoumustblahblahblah():
+    typewrite("before you can do anything, however, you must leave your house.")
+    typewrite("what will you do?")
+    inyourhouse()
+def inyourhouse():
+    tick()
+    time.sleep(1)
+    typewrite("you may:")
+    typewrite("try to [open] the door")
+    typewrite("[look] for a way to dig out of your house")
+    typewrite("[bang] the door until something happens")
+    typewrite("[break] a window and climb out")
+    typewrite("[try] to break reality")
+    choice = input(">")
+    if choice == "open":
+        typewrite("you try to open the door. it's locked.")
+        inyourhouse()
+    elif choice == "look":
+        typewrite("you look around. you don't see any way to easily dig out.")
+        inyourhouse()
+    elif choice == "bang":
+        tick()
+        time.sleep(1)
+        typewrite("you attempt to bang the door.")
+        time.sleep(2.4726)
+        print("BANG!")
+        time.sleep(1)
+        print("BANG!")
+        time.sleep(2.425190)
+        print("BANG!")
+        typewrite("oh crap. your knuckles are bleeding.")
+        typewrite("you may:")
+        typewrite("[deal] with it and let them bleed")
+        typewrite("[search] the house for bandages")
+        choice = input(">")
+        if choice == "deal":
+            game_state["bleeding"] = True
+            typewrite("you decide to let them bleed and continue")
+            inyourhouse()
+    elif choice == "break":
+        tick()
+        typewrite("you decide to find a way to break a window, even though it is quite small.")
+        typewrite("would you like to attempt to break it with your knuckles, or try to find something to hit it with?")
+        time.sleep(1)
+        typewrite("you may:")
+        typewrite("[break] the windows with your bare fists")
+        typewrite("[look] for something to break the window with")
+        choice = input(">")
+        if choice == "break":
+            tick()
+            if game_state["bleeding"] == True:
+                typewrite("your fists are bleeding. continue anyway?")
+                typewrite("you may:")
+                time.sleep(1)
+                typewrite("[continue] anyway")
+                typewrite("[don't] continue")
+                choice = input(">")
+                if choice == "continue":
+                    tick()
+                    typewrite("you punch the window with all of your might.")
+                    typewrite("the windows shatters into a million tiny pieces.")
+                    typewrite("unfortunately, most of them fly into your body and lodge themselves between your skin.")
+                    typewrite("it feels 1000x worse than having fiberglass in your skin, which is excruciating.")
+                    game_state["glassshatter"] = 1
+                elif choice == "don't":
+                    typewrite("you decide not to break the window with your fists.")
+                    typewrite("honestly, considering the condition they are in, that's probably the best choice")
+                    inyourhouse()
+        if choice == "look":
+            tick()
+            typewrite("you decide to look for an object to smash the window with.")
+            time.sleep(1)
+            typewrite("you see a paperclip on the floor. hella useful eh...")
+            time.sleep(0.5)
+            typewrite("you keep searching for something that will actually break the window.")
+            time.sleep(1)
+            typewrite("you find a stick!")
+            time.sleep(1)
+            typewrite("this will have to do. you prepare to take a swing at the window.")
+            typewrite("alright, ready.")
+            time.s;eep(1)
+            typewrite("3...")
+            time.sleep(1)
+            typewrite("2...")
+            time.sleep(1)
+            typewrite("1...")
+            typewrite("you begin to swing the stick.")
+            typewrite("bam! the window shatters into lots of miniscule fragments of glass.")
+            time.sleep(0.5)
+            typewrite("relieved that you didn't have to break the window with your fists, you climb out of the window and into the world outside.")
+            outsideworld()
+    elif choice == "try":
+        tick()
+        typewrite("you attempt to break reality.")
+        time.sleep(1)
+        typewrite("whatever tf that means lol.")
+        time.sleep(1)
+        typewrite("you tried Reality Break α.")
+        time.sleep(1)
+        typewrite("you were protected by the psychic shield.")
+        time.sleep(1)
+        typewrite("haha just kidding loser it's not 1995 anymore, it's 2009! PSI does not work anymore lol.")
+        typewrite("determined, you try Reality Break β.")
+        time.sleep(1)
+        typewrite("you were protected by the psychic shield.")
+        time.sleep(1)
+        typewrite("haha why did you think that would work?")
+        typewrite("you try Reality Break γ.")
+        time.sleep(1)
+        typewrite("you were protected by the psychic shield.")
+        time.sleep(1)
+        typewrite("ok please stop lol.")
+        typewrite("you try Reality Break Ω.")
+        time.sleep(1)
+        typewrite("you were protected by the psychic shield.")
+        time.sleep(1)
+        typewrite("ok seriously stop. there is nothing you can do. please just try something else.")
+titlescreen()
