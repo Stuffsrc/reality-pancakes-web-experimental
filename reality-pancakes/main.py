@@ -12,6 +12,8 @@ pygame.mixer.init()
 async def main():
         running = True
         while running:
+
+                
                 def playdemosong()
                         # 1. Get the absolute path to the directory where THIS script is saved
                     BASE_PATH = pathlib.Path(__file__).parent.resolve()
