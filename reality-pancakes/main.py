@@ -1,21 +1,21 @@
-import sys
-import time
-import webbrowser
-import os
-import json
-import random
-import pygame
-import pathlib
-import asyncio
-pygame.init()
-pygame.mixer.init()
-async def main():
+    import sys
+    import time
+    import webbrowser
+    import os
+    import json
+    import random
+    import pygame
+    import pathlib
+    import asyncio
+    pygame.init()
+    pygame.mixer.init()
+    async def main():
         running = True
         while running:
-
-                
+            font_path = "asset/fonts/schrift.ttf"
+            font = pygame.font.Font(font_path, 24)
                 def playdemosong()
-                        # 1. Get the absolute path to the directory where THIS script is saved
+                    # 1. Get the absolute path to the directory where THIS script is saved
                     BASE_PATH = pathlib.Path(__file__).parent.resolve()
                     
                     # 2. Join it with your asset folder or filename
