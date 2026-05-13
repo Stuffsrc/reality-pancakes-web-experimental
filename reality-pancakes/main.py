@@ -9,6 +9,8 @@ import pathlib
 pygame.init()
 pygame.mixer.init()
 
+__file__ = "."
+
 def clearterm():
     """Clear the terminal screen on Windows, Linux, or macOS."""
     try:
