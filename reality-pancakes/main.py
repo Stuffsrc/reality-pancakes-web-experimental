@@ -9,7 +9,10 @@ import pathlib
 pygame.init()
 pygame.mixer.init()
 
-__file__ = "."
+try:
+    BASE_DIR = os.path.dirname(__file__)
+except NameError:
+    BASE_DIR = "."
 
 def clearterm():
     """Clear the terminal screen on Windows, Linux, or macOS."""
